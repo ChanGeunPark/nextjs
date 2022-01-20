@@ -6,29 +6,29 @@ import Seo from '../components/Seo';
 
 const API_KEY = "82221edb0c272ba0da179fce766d8e21";
 
-export default function Home(){
+export default function Home() {
     const [movies, setMovies] = useState([]);//배열이어야지 movie api를 불러올 수 있다.
-    useEffect(()=>{
-        (async()=>{
-            const {results} = await (await fetch(
+    useEffect(() => {
+        (async () => {
+            const { results } = await (await fetch(
                 `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`
             )).json();
             setMovies(results);
         })();
 
     }, []);
-return (
-    <>
-    <div className='container'>
-        <Seo title="Home"/>
-        {!movies && <h4>Loading...</h4> /*만약 movie가 존재하지 않으면*/}
-        {movies?.map(movie => (
-            <div key={movie.id} className="movie">
-                <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} />
-            </div>
-        ))}
+    return (
+        <>
+            <div className='container'>
+                <Seo title="Home" />
+                {!movies && <h4>Loading...</h4> /*만약 movie가 존재하지 않으면*/}
+                {movies?.map(movie => (
+                    <div key={movie.id} className="movie">
+                        <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} />
+                    </div>
+                ))}
 
-        <style jsx>{`
+                <style jsx>{`
         .container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -49,10 +49,10 @@ return (
             text-align: center;
         }
         `}</style>
-    </div>
-    </>
-);
+            </div>
+        </>
+    );
 }
 
 
-//2.2부터 다시보기
+//2.22222부터 다시보기
