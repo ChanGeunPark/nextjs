@@ -4,18 +4,26 @@ import axios from 'axios';
 import Seo from '../components/Seo';
 
 
-const API_KEY = "82221edb0c272ba0da179fce766d8e21";
 
-export default function Home() {
+
+//Server Side Rendering
+/*
+nextJS가 페이지를 html형태로 export하던지 pre render하는걸 알고있다.
+nextJS는 초기상태에 html을 보여준다 그 후에 export나 render을 해줘서 loding을 보여줄 수 있다.
+
+
+*/
+
+
+export default function Home({results}) {
     const [movies, setMovies] = useState([]);//배열이어야지 movie api를 불러올 수 있다.
     useEffect(() => {
-        (async () => {
-            const { results } = await (await fetch(
-                `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`
-            )).json();
+    //     (async () => {
+    //         const { results } = await (await fetch(
+    //             `/api/movies`//next.config에서 이쪽으로 링크를 걸면 fetch한 주소로 바꿔줘서 fetch url을 가져올 수 있다.
+    //         )).json();
             setMovies(results);
-        })();
-
+    //     })();
     }, []);
     return (
         <>
@@ -28,7 +36,7 @@ export default function Home() {
                     </div>
                 ))}
 
-                <style jsx>{`
+        <style jsx>{`
         .container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -54,5 +62,23 @@ export default function Home() {
     );
 }
 
+//Server Side Rendering
+/*
+nextJS가 페이지를 html형태로 export하던지 pre render하는걸 알고있다.
+nextJS는 초기상태에 html을 보여준다 그 후에 export나 render을 해줘서 loding을 보여줄 수 있다.
+*/
 
-//2.22222부터 다시보기
+export async function getServerSideProps(){//이름을 바꾸면 안된다.
+//이코드는 client쪽이 아니라 server쪽에서만 작동을 한다. 여기에 api key를 숨길수 있다. 백엔드에서만 사용된다.
+    const { results } = await (await fetch(
+        `http://localhost:3000/api/movies`//상대경로는 프론트엔드에서만 작동됨. url을 다 적어줘야함
+        //next.config에서 이쪽으로 링크를 걸면 fetch한 주소로 바꿔줘서 fetch url을 가져올 수 있다.
+    )).json();
+    return{
+        props:{//key
+            results,//내가 원하는 데이터 아무거나 넣을 수 있댜. //이것은 상단 Home function에다 prop으로 넣을수 있다.
+        }
+    }
+    
+}
+//2.4부터 다시보기
