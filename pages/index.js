@@ -2,20 +2,19 @@ import Head from "next/head";//nextjs에서 이런 작은 설정들을 가져올
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Seo from '../components/Seo';
-
-
-
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 //Server Side Rendering
 /*
 nextJS가 페이지를 html형태로 export하던지 pre render하는걸 알고있다.
 nextJS는 초기상태에 html을 보여준다 그 후에 export나 render을 해줘서 loding을 보여줄 수 있다.
-
-
 */
 
-
 export default function Home({results}) {
+
+    
+
     const [movies, setMovies] = useState([]);//배열이어야지 movie api를 불러올 수 있다.
     useEffect(() => {
     //     (async () => {
@@ -25,15 +24,49 @@ export default function Home({results}) {
             setMovies(results);
     //     })();
     }, []);
+
+
+
+    const router = useRouter();
+    const onClick = (id, title) => {
+        //router.push(`/movies/${id}`); 링크를 감출때
+        router.push(/*{
+            pathname:`/movies/${id}`,//링크에다 데이터 넘기는법
+            query:{
+                title,
+            }
+        },`/movies/${id}`*/
+        
+        `/movies/${title}/${id}`,
+        
+        
+        
+        );// ,다음에 링크를 써주면 그 뒤에 데이터들은 숨겨준다.
+    }
     return (
         <>
             <div className='container'>
                 <Seo title="Home" />
                 {!movies && <h4>Loading...</h4> /*만약 movie가 존재하지 않으면*/}
                 {movies?.map(movie => (
-                    <div key={movie.id} className="movie">
+                    
+                    <div onClick={()=>onClick(movie.id,movie.original_title)} className="movie" key={movie.id}>
                         <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} />
+                        <h4>
+                            <Link href={{
+                                pathname:`/movies/${movie.id}`,
+                                query:{
+                                    title:movie.original_title,
+                                },
+                            }}
+                            as={`/movies/${movie.id}`}>
+                                <a>
+                                {movie.original_title}
+                                </a>
+                            </Link>
+                        </h4>
                     </div>
+    
                 ))}
 
         <style jsx>{`
@@ -42,6 +75,9 @@ export default function Home({results}) {
             grid-template-columns: 1fr 1fr;
             padding: 20px;
             gap: 20px;
+        }
+        .movie{
+            cursor:pointer;
         }
         .movie img {
             max-width: 100%;
